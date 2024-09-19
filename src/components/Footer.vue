@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   name: {
     type: String,
     required: true,
