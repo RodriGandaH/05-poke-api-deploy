@@ -11,7 +11,6 @@ let cont = ref(1);
 onMounted(() => {
   cargarPersonajes();
 });
-
 const cargarPersonajes = async () => {
   try {
     const { data } = await axios.get(urlBase);
@@ -19,60 +18,51 @@ const cargarPersonajes = async () => {
     next.value = data.next;
     prev.value = data.previous;
     console.log("siguiente", next.value);
-    const pokemonPromesas = data.results;
-    obtenerPersonajes(pokemonPromesas);
 
-    // console.log("resultados", pokemonPromesas);
-
-    /* const pokemonPromesas = data.results.map(async (pokemon) => {
+    const pokemonPromesas = [];
+    for (let i = 0; i < data.results.length; i++) {
+      const pokemon = data.results[i];
       const pokemonDetalles = await axios.get(pokemon.url);
-      //console.log(pokemonDetalles);
-      return {
+      pokemonPromesas.push({
         id: pokemonDetalles.data.id,
         name: pokemonDetalles.data.name,
         image: pokemonDetalles.data.sprites.front_default,
-      };
-    });*/
+      });
+    }
 
-    // personajes.value = await Promise.all(pokemonPromesas);
-    //console.log(personajes.value);
+    personajes.value = pokemonPromesas;
+    console.log("personajes", personajes.value);
   } catch (error) {
     console.log(error);
   }
 };
 
-const obtenerPersonajes = async (data) => {
-  for (let i = 0; i < data.length; i++) {
-    let pokemon = data[i];
-    let pokemonDetalles = await axios.get(pokemon.url);
-    // console.log(pokemonDetalles.data.id);
-    let pokemomInfo = {
-      id: pokemonDetalles.data.id,
-      name: pokemonDetalles.data.name,
-      image: pokemonDetalles.data.sprites.front_default,
-    };
-    personajes.value.push(pokemomInfo);
-  }
-  console.log("personajes", personajes.value);
-};
 const paginacion = async (accion) => {
-  if (accion == "next") {
-    cont.value++;
+  try {
+    let url = accion === "next" ? next.value : prev.value;
+    if (!url) return;
 
+    cont.value += accion === "next" ? 1 : -1;
     personajes.value = [];
-    const { data } = await axios.get(next.value);
-    obtenerPersonajes(data.results);
+
+    const { data } = await axios.get(url);
     next.value = data.next;
     prev.value = data.previous;
-  }
-  if (accion == "prev") {
-    cont.value--;
 
-    personajes.value = [];
-    const { data } = await axios.get(prev.value);
-    obtenerPersonajes(data.results);
-    next.value = data.next;
-    prev.value = data.previous;
+    const pokemonPromesas = [];
+    for (let i = 0; i < data.results.length; i++) {
+      const pokemon = data.results[i];
+      const pokemonDetalles = await axios.get(pokemon.url);
+      pokemonPromesas.push({
+        id: pokemonDetalles.data.id,
+        name: pokemonDetalles.data.name,
+        image: pokemonDetalles.data.sprites.front_default,
+      });
+    }
+
+    personajes.value = pokemonPromesas;
+  } catch (error) {
+    console.log(error);
   }
 };
 </script>
