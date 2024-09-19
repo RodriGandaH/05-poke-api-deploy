@@ -19,16 +19,16 @@ const cargarPersonajes = async () => {
     prev.value = data.previous;
     console.log("siguiente", next.value);
 
-    const pokemonPromesas = [];
-    for (let i = 0; i < data.results.length; i++) {
-      const pokemon = data.results[i];
-      const pokemonDetalles = await axios.get(pokemon.url);
-      pokemonPromesas.push({
-        id: pokemonDetalles.data.id,
-        name: pokemonDetalles.data.name,
-        image: pokemonDetalles.data.sprites.front_default,
-      });
-    }
+    const pokemonPromesas = await Promise.all(
+      data.results.map(async (pokemon) => {
+        const pokemonDetalles = await axios.get(pokemon.url);
+        return {
+          id: pokemonDetalles.data.id,
+          name: pokemonDetalles.data.name,
+          image: pokemonDetalles.data.sprites.front_default,
+        };
+      })
+    );
 
     personajes.value = pokemonPromesas;
     console.log("personajes", personajes.value);
@@ -49,16 +49,16 @@ const paginacion = async (accion) => {
     next.value = data.next;
     prev.value = data.previous;
 
-    const pokemonPromesas = [];
-    for (let i = 0; i < data.results.length; i++) {
-      const pokemon = data.results[i];
-      const pokemonDetalles = await axios.get(pokemon.url);
-      pokemonPromesas.push({
-        id: pokemonDetalles.data.id,
-        name: pokemonDetalles.data.name,
-        image: pokemonDetalles.data.sprites.front_default,
-      });
-    }
+    const pokemonPromesas = await Promise.all(
+      data.results.map(async (pokemon) => {
+        const pokemonDetalles = await axios.get(pokemon.url);
+        return {
+          id: pokemonDetalles.data.id,
+          name: pokemonDetalles.data.name,
+          image: pokemonDetalles.data.sprites.front_default,
+        };
+      })
+    );
 
     personajes.value = pokemonPromesas;
   } catch (error) {

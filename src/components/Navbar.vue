@@ -3,6 +3,7 @@
     <div class="container">
       <a class="navbar-brand" href="#">
         <img src="/poke.png" alt="" width="60px" height="auto" />
+        <span class="fs-3">Pokedex</span>
       </a>
       <button
         class="navbar-toggler d-lg-none"

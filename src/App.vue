@@ -2,6 +2,8 @@
 import { RouterView } from "vue-router";
 import Footer from "./components/Footer.vue";
 import Navbar from "./components/Navbar.vue";
+
+const name = "Rodrigo Gandarillas Heredia";
 </script>
 
 <template>
@@ -13,7 +15,7 @@ import Navbar from "./components/Navbar.vue";
       <RouterView />
     </main>
     <footer>
-      <Footer />
+      <Footer :name="name" />
     </footer>
   </div>
 </template>
